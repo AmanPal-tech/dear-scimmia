@@ -478,6 +478,56 @@
   .duel-result .score{ font-family:'Fraunces', serif; font-size:1.6rem; color:var(--gold-soft); margin-bottom:6px; }
   .duel-result p{ color:var(--lilac); font-size:0.9rem; max-width:36ch; margin:0 auto 18px; }
 
+  /* ---------- birthday candle ---------- */
+  .cake-stage{
+    margin-top:34px;
+    display:flex; flex-direction:column; align-items:center; gap:18px;
+    text-align:center;
+  }
+  .cake-svg{
+    width:200px; height:200px;
+    filter: drop-shadow(0 18px 30px rgba(0,0,0,0.5));
+  }
+  .flame{
+    transform-origin:50% 100%;
+    animation: flame-flicker 1.6s ease-in-out infinite;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  @keyframes flame-flicker{
+    0%,100%{ transform:scaleY(1) scaleX(1) rotate(0deg); }
+    25%{ transform:scaleY(1.1) scaleX(0.93) rotate(-3deg); }
+    50%{ transform:scaleY(0.94) scaleX(1.06) rotate(2deg); }
+    75%{ transform:scaleY(1.06) scaleX(0.96) rotate(-2deg); }
+  }
+  .flame.out{ opacity:0; transform:scaleY(0.15); animation:none; }
+  .smoke-wisp{ opacity:0; }
+  .cake-stage.smoking .smoke-wisp{ animation: smoke-rise 2.4s ease-out forwards; }
+  @keyframes smoke-rise{
+    0%{ opacity:0; transform:translateY(0) scale(0.6); }
+    18%{ opacity:0.55; }
+    100%{ opacity:0; transform:translateY(-46px) scale(1.5); }
+  }
+  .cake-actions{ display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .blow-fallback{
+    background:none; border:none; color:var(--lilac-dim);
+    font-family:'Fraunces', serif; font-style:italic; font-size:0.88rem;
+    text-decoration:underline; text-underline-offset:3px; cursor:pointer; padding:4px;
+  }
+  .mic-status{
+    font-size:0.78rem; color:var(--lilac-dim); min-height:1.2em; margin:0;
+  }
+  .mic-note{ font-size:0.74rem; color:var(--lilac-dim); max-width:32ch; margin:2px auto 0; opacity:0.8; }
+  .wish-message{
+    opacity:0; transform:translateY(14px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    margin-top:6px;
+  }
+  .wish-message.show{ opacity:1; transform:none; }
+  .wish-message .wish-title{
+    font-family:'Fraunces', serif; font-size:1.5rem; color:var(--gold-soft); margin:0 0 8px;
+  }
+  .wish-message .wish-sub{ color:var(--lilac); font-size:0.98rem; max-width:40ch; margin:0 auto; }
+
   /* ---------- finale ---------- */
   .finale{
     text-align:center;
@@ -744,6 +794,56 @@
         <div class="duel-idle" id="duelidle">
           <p>Every round is dedicated to the vendors who never stood a chance against you.</p>
           <button class="duel-btn" id="duelstart" type="button">Start the duel</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cake">
+    <div class="wrap reveal">
+      <div class="kicker">One last thing<span class="rule"></span>Make a wish</div>
+      <h2>Blow out the candle.</h2>
+      <p class="body-text">Go on, actually blow into your phone. Or just tap it if you'd rather not.</p>
+      <div class="cake-stage" id="cakestage">
+        <svg class="cake-svg" id="cakesvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <radialGradient id="flameGrad" cx="50%" cy="65%" r="70%">
+              <stop offset="0%" stop-color="#fff6d8"/>
+              <stop offset="55%" stop-color="#f0cf8f"/>
+              <stop offset="100%" stop-color="#e8834c"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="100" cy="176" rx="72" ry="9" fill="#0c0817" opacity="0.5"/>
+          <rect x="45" y="118" width="110" height="52" rx="10" fill="#3a2350"/>
+          <path d="M45 128c8-10 16 6 24-2s16-10 24-2 16 6 24-2 16-10 24-2v10H45z" fill="#e88c7d" opacity="0.85"/>
+          <circle cx="65" cy="145" r="2.4" fill="#e8b75c"/>
+          <circle cx="88" cy="150" r="2.2" fill="#f4ede2"/>
+          <circle cx="112" cy="144" r="2.4" fill="#e8b75c"/>
+          <circle cx="132" cy="150" r="2.2" fill="#f4ede2"/>
+          <circle cx="78" cy="158" r="2" fill="#e8b75c"/>
+          <circle cx="122" cy="158" r="2" fill="#f4ede2"/>
+          <rect x="96" y="82" width="8" height="38" rx="2" fill="#f0cf8f"/>
+          <rect x="96" y="90" width="8" height="4" fill="#e88c7d"/>
+          <rect x="96" y="102" width="8" height="4" fill="#e88c7d"/>
+          <rect x="99" y="76" width="2" height="7" fill="#2a1b18"/>
+          <g id="smoke">
+            <ellipse class="smoke-wisp" cx="100" cy="70" rx="5" ry="7" fill="#b6a9d1"/>
+            <ellipse class="smoke-wisp" cx="103" cy="60" rx="4" ry="6" fill="#b6a9d1" style="animation-delay:0.3s"/>
+          </g>
+          <g id="flame" class="flame">
+            <ellipse cx="100" cy="66" rx="8" ry="13" fill="url(#flameGrad)"/>
+          </g>
+        </svg>
+        <div class="cake-actions">
+          <button class="duel-btn" id="micblow" type="button">🎤 Blow into your mic</button>
+          <button class="blow-fallback" id="tapblow" type="button">or just tap here to blow it out</button>
+        </div>
+        <p class="mic-status" id="micstatus"></p>
+        <p class="mic-note">Nothing is recorded or sent anywhere — it just listens for a moment, right here on this page, to notice when you've blown.</p>
+        <div class="wish-message" id="wishmessage">
+          <p class="wish-title">Make a wish.</p>
+          <p class="wish-sub">Honestly? You already got one — a whole page of someone thinking this hard about you. Happy Birthday, Scimmia.</p>
+          <button class="blow-fallback" id="relight" type="button">light it again</button>
         </div>
       </div>
     </div>
@@ -1146,5 +1246,100 @@
   }
 
   duelStart.addEventListener('click', startDuel);
+
+  /* birthday candle */
+  var flame = document.getElementById('flame');
+  var cakeStage = document.getElementById('cakestage');
+  var micBtn = document.getElementById('micblow');
+  var tapBtn = document.getElementById('tapblow');
+  var relightBtn = document.getElementById('relight');
+  var wishMsg = document.getElementById('wishmessage');
+  var micStatus = document.getElementById('micstatus');
+  var audioCtx = null, micStream = null, monitoring = false, candleRaf = null, micTimeout = null;
+
+  function stopMic(){
+    monitoring = false;
+    if(candleRaf){ cancelAnimationFrame(candleRaf); candleRaf = null; }
+    if(micTimeout){ clearTimeout(micTimeout); micTimeout = null; }
+    if(micStream){ micStream.getTracks().forEach(function(t){ t.stop(); }); micStream = null; }
+    if(audioCtx){ audioCtx.close(); audioCtx = null; }
+  }
+
+  function extinguish(){
+    if(flame.classList.contains('out')) return;
+    flame.classList.add('out');
+    cakeStage.classList.add('smoking');
+    wishMsg.classList.add('show');
+    micStatus.textContent = '';
+    burst();
+    stopMic();
+  }
+
+  function relight(){
+    flame.classList.remove('out');
+    cakeStage.classList.remove('smoking');
+    wishMsg.classList.remove('show');
+    micBtn.disabled = false;
+    micBtn.textContent = '🎤 Blow into your mic';
+  }
+
+  function startMic(){
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      micStatus.textContent = "Mic not available here — tap below instead.";
+      micBtn.disabled = false;
+      micBtn.textContent = '🎤 Blow into your mic';
+      return;
+    }
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream){
+      micStream = stream;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      var source = audioCtx.createMediaStreamSource(stream);
+      var analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 512;
+      source.connect(analyser);
+      var data = new Uint8Array(analyser.fftSize);
+      monitoring = true;
+      micStatus.textContent = 'Listening… go ahead and blow.';
+      var loudFrames = 0;
+      function tick(){
+        if(!monitoring) return;
+        analyser.getByteTimeDomainData(data);
+        var sum = 0;
+        for(var i=0;i<data.length;i++){
+          var v = (data[i]-128)/128;
+          sum += v*v;
+        }
+        var rms = Math.sqrt(sum/data.length);
+        if(rms > 0.14) loudFrames++;
+        else loudFrames = Math.max(0, loudFrames - 1);
+        if(loudFrames > 6){
+          extinguish();
+          return;
+        }
+        candleRaf = requestAnimationFrame(tick);
+      }
+      tick();
+      micTimeout = setTimeout(function(){
+        if(monitoring){
+          stopMic();
+          micStatus.textContent = "Didn't catch a blow — tap below instead.";
+          micBtn.disabled = false;
+          micBtn.textContent = '🎤 Try again';
+        }
+      }, 20000);
+    }).catch(function(){
+      micStatus.textContent = "Mic access wasn't granted — no worries, tap below instead.";
+      micBtn.disabled = false;
+      micBtn.textContent = '🎤 Blow into your mic';
+    });
+  }
+
+  micBtn.addEventListener('click', function(){
+    micBtn.disabled = true;
+    micBtn.textContent = 'Listening…';
+    startMic();
+  });
+  tapBtn.addEventListener('click', extinguish);
+  relightBtn.addEventListener('click', relight);
 })();
 </script>
